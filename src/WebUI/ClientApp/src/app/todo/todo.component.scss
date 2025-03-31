@@ -13,12 +13,13 @@
 }
 
 #todo-items .todo-item-title {
-  padding-top: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
 #todo-items .list-group-item {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 8px;
 }
 
 #todo-items .list-group-item .btn-xs {
@@ -29,10 +30,31 @@
   padding-top: 8px;
 }
 
-#todo-items .todo-item-commands {
+#todo-items .todo-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding-top: 4px;
+}
+
+.form-control-color {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .modal-footer {
   display: block;
+}
+
+.modal-body .form-control-color {
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  cursor: pointer;
 }
