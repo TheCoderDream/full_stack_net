@@ -13,6 +13,10 @@ public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
             .IsRequired();
 
         builder.Property(t => t.Note)
-            .HasMaxLength(2);
+            .HasMaxLength(200);
+
+        builder.HasMany(t => t.Tags)
+            .WithMany(t => t.TodoItems)
+            .UsingEntity(j => j.ToTable("TodoItemTags"));
     }
 }

@@ -1,5 +1,7 @@
 using MediatR;
+using Todo_App.Application.Common.Exceptions;
 using Todo_App.Application.Common.Interfaces;
+using Todo_App.Domain.Entities;
 
 namespace Todo_App.Application.TodoItems.Commands.UpdateTodoItemBackgroundColor;
 

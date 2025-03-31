@@ -30,10 +30,20 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+    public DbSet<Tag> Tags => Set<Tag>(); 
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Entity<TodoItem>()
+            .HasMany(t => t.Tags)
+            .WithMany(t => t.TodoItems)
+            .UsingEntity(j => j.ToTable("TodoItemTags"));
+
+        //soft delete - Global Query Filter
+        builder.Entity<TodoItem>().HasQueryFilter(t => !t.IsDeleted);
+        builder.Entity<TodoList>().HasQueryFilter(t => !t.IsDeleted);
+        builder.Entity<Tag>().HasQueryFilter(t => !t.IsDeleted);
 
         base.OnModelCreating(builder);
     }
