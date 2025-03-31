@@ -48,14 +48,17 @@
                 class="form-control item-input-control" [(ngModel)]="item.title" (keyup.enter)="updateItem(item, true)"
                 (blur)="updateItem(item)" autofocus="autofocus" />
               <div class="todo-item-title" *ngIf="item != selectedItem" [ngClass]="{ 'done-todo': item.done }"
-                (click)="editItem(item, 'itemTitle' + i)" class="form-control item-input-control">
-                <span>{{ item.title }}</span>
+                [style.background-color]="item.backgroundColor || 'transparent'">
+                {{ item.title }}
               </div>
             </div>
-            <div class="todo-item-commands">
-              <button *ngIf="item.id != 0" (click)="showItemDetailsModal(itemDetailsModalTemplate, item)"
-                class="btn btn-default btn-xs" role="button">
-                <i class="bi bi-three-dots-vertical"></i>
+            <div class="todo-item-actions">
+              <input type="color" [(ngModel)]="item.backgroundColor" (change)="updateItem(item)" class="form-control form-control-color" />
+              <button class="btn btn-default" title="Details..." (click)="showItemDetailsModal(itemDetailsModalTemplate, item)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-default" title="Delete..." (click)="deleteItem(item)">
+                <i class="bi bi-trash"></i>
               </button>
             </div>
           </div>
@@ -126,6 +129,10 @@
       <div class="form-group">
         <label for="note">Note</label>
         <textarea id="note" class="form-control" rows="3" formControlName="note"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="backgroundColor">Background Color</label>
+        <input type="color" class="form-control form-control-color" id="backgroundColor" formControlName="backgroundColor" />
       </div>
     </form>
     <div *ngIf="debug">

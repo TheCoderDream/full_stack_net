@@ -717,11 +717,20 @@ export interface IPaginatedListOfTodoItemBriefDto {
     hasNextPage?: boolean;
 }
 
+export interface ITodoItemBriefDto {
+    id?: number;
+    listId?: number;
+    title?: string | undefined;
+    done?: boolean;
+    backgroundColor?: string | undefined;
+}
+
 export class TodoItemBriefDto implements ITodoItemBriefDto {
     id?: number;
     listId?: number;
     title?: string | undefined;
     done?: boolean;
+    backgroundColor?: string | undefined;
 
     constructor(data?: ITodoItemBriefDto) {
         if (data) {
@@ -738,6 +747,7 @@ export class TodoItemBriefDto implements ITodoItemBriefDto {
             this.listId = _data["listId"];
             this.title = _data["title"];
             this.done = _data["done"];
+            this.backgroundColor = _data["backgroundColor"];
         }
     }
 
@@ -754,15 +764,9 @@ export class TodoItemBriefDto implements ITodoItemBriefDto {
         data["listId"] = this.listId;
         data["title"] = this.title;
         data["done"] = this.done;
+        data["backgroundColor"] = this.backgroundColor;
         return data;
     }
-}
-
-export interface ITodoItemBriefDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
 }
 
 export class CreateTodoItemCommand implements ICreateTodoItemCommand {
@@ -849,11 +853,20 @@ export interface IUpdateTodoItemCommand {
     done?: boolean;
 }
 
+export interface IUpdateTodoItemDetailCommand {
+    id?: number;
+    listId?: number;
+    priority?: PriorityLevel;
+    note?: string | undefined;
+    backgroundColor?: string | undefined;
+}
+
 export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand {
     id?: number;
     listId?: number;
     priority?: PriorityLevel;
     note?: string | undefined;
+    backgroundColor?: string | undefined;
 
     constructor(data?: IUpdateTodoItemDetailCommand) {
         if (data) {
@@ -870,6 +883,7 @@ export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand
             this.listId = _data["listId"];
             this.priority = _data["priority"];
             this.note = _data["note"];
+            this.backgroundColor = _data["backgroundColor"];
         }
     }
 
@@ -886,15 +900,9 @@ export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand
         data["listId"] = this.listId;
         data["priority"] = this.priority;
         data["note"] = this.note;
+        data["backgroundColor"] = this.backgroundColor;
         return data;
     }
-}
-
-export interface IUpdateTodoItemDetailCommand {
-    id?: number;
-    listId?: number;
-    priority?: PriorityLevel;
-    note?: string | undefined;
 }
 
 export enum PriorityLevel {
@@ -1056,6 +1064,16 @@ export interface ITodoListDto {
     items?: TodoItemDto[];
 }
 
+export interface ITodoItemDto {
+    id?: number;
+    listId?: number;
+    title?: string | undefined;
+    done?: boolean;
+    priority?: number;
+    note?: string | undefined;
+    backgroundColor?: string | undefined;
+}
+
 export class TodoItemDto implements ITodoItemDto {
     id?: number;
     listId?: number;
@@ -1063,6 +1081,7 @@ export class TodoItemDto implements ITodoItemDto {
     done?: boolean;
     priority?: number;
     note?: string | undefined;
+    backgroundColor?: string | undefined;
 
     constructor(data?: ITodoItemDto) {
         if (data) {
@@ -1081,6 +1100,7 @@ export class TodoItemDto implements ITodoItemDto {
             this.done = _data["done"];
             this.priority = _data["priority"];
             this.note = _data["note"];
+            this.backgroundColor = _data["backgroundColor"];
         }
     }
 
@@ -1099,17 +1119,9 @@ export class TodoItemDto implements ITodoItemDto {
         data["done"] = this.done;
         data["priority"] = this.priority;
         data["note"] = this.note;
+        data["backgroundColor"] = this.backgroundColor;
         return data;
     }
-}
-
-export interface ITodoItemDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-    priority?: number;
-    note?: string | undefined;
 }
 
 export class CreateTodoListCommand implements ICreateTodoListCommand {
