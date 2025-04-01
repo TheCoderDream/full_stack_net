@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Todo_App.Application.Common.Interfaces;
 using Todo_App.Domain.Entities;
+using Todo_App.Domain.ValueObjects;
 using Todo_App.Infrastructure.Identity;
 using Todo_App.Infrastructure.Persistence.Configurations;
 using Todo_App.Infrastructure.Persistence.Interceptors;
@@ -43,9 +44,10 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         builder.Entity<TodoList>().HasQueryFilter(t => !t.IsDeleted);
         builder.Entity<Tag>().HasQueryFilter(t => !t.IsDeleted);
 
-        builder.ApplyConfiguration(new TodoItemConfiguration());
-        builder.ApplyConfiguration(new TodoListConfiguration());
-        builder.ApplyConfiguration(new TagConfiguration());
+        //builder.ApplyConfiguration(new TodoItemConfiguration());
+        //builder.ApplyConfiguration(new TodoListConfiguration());
+        //builder.ApplyConfiguration(new TagConfiguration());
+
         base.OnModelCreating(builder);
 }
 
@@ -57,7 +59,15 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _mediator.DispatchDomainEvents(this);
-
-        return await base.SaveChangesAsync(cancellationToken);
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            // Hata mesajını loglayın
+            Console.WriteLine(ex.InnerException?.Message);
+            throw;
+        }
     }
 }

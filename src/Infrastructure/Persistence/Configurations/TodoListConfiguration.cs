@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Todo_App.Domain.Entities;
+using Todo_App.Domain.ValueObjects;
 
 namespace Todo_App.Infrastructure.Persistence.Configurations;
 
@@ -13,6 +14,10 @@ public class TodoListConfiguration : IEntityTypeConfiguration<TodoList>
             .IsRequired();
 
         builder
-            .OwnsOne(b => b.Colour);
+            .Property(t => t.Colour)
+            .HasConversion(
+                colour => colour.ToString(), // 'Colour' object'ü string'e dönüştür
+                colourCode => Colour.From(colourCode)) // string'i 'Colour' object'üne dönüştür
+            .HasMaxLength(7);
     }
 }
