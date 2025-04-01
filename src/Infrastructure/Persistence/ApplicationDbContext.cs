@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Reflection.Emit;
 using Duende.IdentityServer.EntityFramework.Options;
 using MediatR;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Todo_App.Application.Common.Interfaces;
 using Todo_App.Domain.Entities;
 using Todo_App.Infrastructure.Identity;
+using Todo_App.Infrastructure.Persistence.Configurations;
 using Todo_App.Infrastructure.Persistence.Interceptors;
 
 namespace Todo_App.Infrastructure.Persistence;
@@ -35,18 +37,17 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        builder.Entity<TodoItem>()
-            .HasMany(t => t.Tags)
-            .WithMany(t => t.TodoItems)
-            .UsingEntity(j => j.ToTable("TodoItemTags"));
 
         //soft delete - Global Query Filter
         builder.Entity<TodoItem>().HasQueryFilter(t => !t.IsDeleted);
         builder.Entity<TodoList>().HasQueryFilter(t => !t.IsDeleted);
         builder.Entity<Tag>().HasQueryFilter(t => !t.IsDeleted);
 
+        builder.ApplyConfiguration(new TodoItemConfiguration());
+        builder.ApplyConfiguration(new TodoListConfiguration());
+        builder.ApplyConfiguration(new TagConfiguration());
         base.OnModelCreating(builder);
-    }
+}
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
