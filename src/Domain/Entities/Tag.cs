@@ -12,7 +12,7 @@ public class Tag : BaseAuditableEntity
     public string Name { get; set; } = string.Empty;
 
     public ICollection<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
-
+    
     public Tag()
     {
         TodoItems = new List<TodoItem>();
