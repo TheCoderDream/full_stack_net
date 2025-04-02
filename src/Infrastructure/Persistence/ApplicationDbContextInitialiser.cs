@@ -71,6 +71,15 @@ public class ApplicationDbContextInitialiser
 
         // Default data
         // Seed, if necessary
+        if (!_context.Tags.Any())
+        {
+            _context.Tags.AddRange(
+                new Tag { Name = "Work" },
+                new Tag { Name = "Personal" },
+                new Tag { Name = "System" }
+            );
+            await _context.SaveChangesAsync();
+        }
         if (!_context.TodoLists.Any())
         {
             _context.TodoLists.Add(new TodoList

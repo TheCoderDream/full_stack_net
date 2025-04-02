@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Todo_App.Infrastructure.Persistence.Migrations
+namespace Todo_App.Infrastructure.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -105,17 +106,36 @@ namespace Todo_App.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TodoLists",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Colour_Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Colour = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -236,14 +256,16 @@ namespace Todo_App.Infrastructure.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ListId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     Reminder = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    BackgroundColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Done = table.Column<bool>(type: "bit", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -252,6 +274,30 @@ namespace Todo_App.Infrastructure.Persistence.Migrations
                         name: "FK_TodoItems_TodoLists_ListId",
                         column: x => x.ListId,
                         principalTable: "TodoLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TodoItemTags",
+                columns: table => new
+                {
+                    TagsId = table.Column<int>(type: "int", nullable: false),
+                    TodoItemsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodoItemTags", x => new { x.TagsId, x.TodoItemsId });
+                    table.ForeignKey(
+                        name: "FK_TodoItemTags_Tags_TagsId",
+                        column: x => x.TagsId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TodoItemTags_TodoItems_TodoItemsId",
+                        column: x => x.TodoItemsId,
+                        principalTable: "TodoItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -335,6 +381,11 @@ namespace Todo_App.Infrastructure.Persistence.Migrations
                 name: "IX_TodoItems_ListId",
                 table: "TodoItems",
                 column: "ListId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TodoItemTags_TodoItemsId",
+                table: "TodoItemTags",
+                column: "TodoItemsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -364,13 +415,19 @@ namespace Todo_App.Infrastructure.Persistence.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "TodoItems");
+                name: "TodoItemTags");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "TodoItems");
 
             migrationBuilder.DropTable(
                 name: "TodoLists");
